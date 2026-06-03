@@ -10,19 +10,19 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  themeColor: '#0B1B4D',
+  themeColor: '#27598C',
 }
 
 export const metadata: Metadata = {
   title: {
-    default: 'Global Excellence Academy | Premium EdTech Platform',
-    template: '%s | Global Excellence Academy'
+    default: 'Royal Public School | Teaching Kids Excellence',
+    template: '%s | Royal Public School'
   },
-  description: 'A prestigious institution dedicated to academic excellence, holistic student development, and shaping the global leaders of tomorrow. Master practical skills with top-tier education.',
-  keywords: ['school management', 'education', 'learning platform', 'academic excellence', 'EdTech', 'student portal', 'online education'],
-  authors: [{ name: 'Global Excellence Academy' }],
-  creator: 'Global Excellence Academy',
-  publisher: 'Global Excellence Academy',
+  description: 'Royal Public School is a premier CBSE-affiliated institution dedicated to academic excellence, character building, and holistic student development. Admissions open for 2025–26.',
+  keywords: ['Royal Public School', 'CBSE school', 'best school', 'school admissions', 'primary school', 'secondary school', 'education', 'academic excellence'],
+  authors: [{ name: 'Royal Public School' }],
+  creator: 'Royal Public School',
+  publisher: 'Royal Public School',
   robots: {
     index: true,
     follow: true,
@@ -36,22 +36,22 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    locale: 'en_US',
-    url: 'https://globalexcellence.edu',
-    title: 'Global Excellence Academy | Premium EdTech Platform',
-    description: 'Experience world-class education designed to accelerate your career. Join a thriving professional community.',
-    siteName: 'Global Excellence Academy',
+    locale: 'en_IN',
+    url: 'https://royalpublicschool.edu.in',
+    title: 'Royal Public School | Teaching Kids Excellence',
+    description: 'A premier CBSE-affiliated school offering world-class education and holistic development for grades Nursery to XII.',
+    siteName: 'Royal Public School',
     images: [{
       url: '/og-image.jpg',
       width: 1200,
       height: 630,
-      alt: 'Global Excellence Academy Campus',
+      alt: 'Royal Public School Campus',
     }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Global Excellence Academy',
-    description: 'Experience world-class education designed to accelerate your career.',
+    title: 'Royal Public School',
+    description: 'A premier CBSE school dedicated to Teaching Kids Excellence.',
     images: ['/og-image.jpg'],
   },
   icons: {
