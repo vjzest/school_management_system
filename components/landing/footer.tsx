@@ -12,7 +12,7 @@ export default function Footer() {
       <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[#589C47]/10 rounded-full blur-[80px] pointer-events-none translate-y-1/2 -translate-x-1/3"></div>
 
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-16 pb-10 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-14 lg:gap-10 mb-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-14 lg:gap-8 mb-14">
 
           {/* Column 1: Brand */}
           <div className="space-y-6 lg:pr-8">
@@ -68,12 +68,12 @@ export default function Footer() {
             <h4 className="text-white font-[800] tracking-wide uppercase text-sm pb-2 border-b border-[#E5D81A]/30">Contact Info</h4>
             <ul className="space-y-5">
               <li className="flex items-start gap-4 group cursor-pointer">
-                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#E5D81A] group-hover:bg-[#27598C] transition-colors shrink-0">
+                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#E5D81A] group-hover:bg-[#27598C] transition-colors shrink-0 mt-1">
                   <MapPin className="w-4 h-4" />
                 </div>
                 <div className="flex flex-col pt-1">
                   <span className="text-white font-bold text-sm">Campus Address</span>
-                  <span className="text-slate-400 text-sm mt-1 leading-relaxed">123 Education Hub, Royal Nagar - 40001</span>
+                  <span className="text-slate-400 text-sm mt-1 leading-relaxed pr-4">M8WX+6JX, Garima Garden, Ashok Vatika, Sahibabad, Ghaziabad, Uttar Pradesh 201006</span>
                 </div>
               </li>
               <li className="flex items-start gap-4 group cursor-pointer">
@@ -95,6 +95,21 @@ export default function Footer() {
                 </div>
               </li>
             </ul>
+          </div>
+
+          {/* Column 4: Location Map */}
+          <div className="space-y-6">
+            <h4 className="text-white font-[800] tracking-wide uppercase text-sm pb-2 border-b border-[#E5D81A]/30">Our Location</h4>
+            <div className="w-full h-[180px] rounded-2xl overflow-hidden border border-white/10 relative shadow-lg">
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3499.8007043787193!2d77.3490987!3d28.695607700000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfa4485b0e1e3%3A0xc735553820743263!2sRoyal%20Public%20School!5e0!3m2!1sen!2sin!4v1780588350449!5m2!1sen!2sin" 
+                className="absolute inset-0 w-full h-full grayscale hover:grayscale-0 transition-all duration-500" 
+                style={{ border: 0 }} 
+                allowFullScreen={true} 
+                loading="lazy" 
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
           </div>
 
         </div>

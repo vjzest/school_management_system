@@ -70,58 +70,52 @@ export default function Page() {
               </div>
             </motion.div>
 
-            {/* Right Graphic — all screen sizes, shorter on mobile */}
+            {/* Right Graphic — Image with floating badges */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="relative h-[260px] sm:h-[380px] lg:h-[520px] w-full flex items-center justify-center"
+              className="relative h-[320px] sm:h-[480px] lg:h-[580px] w-full flex items-center justify-center mt-6 lg:mt-0"
             >
-              <div className="relative w-full max-w-[440px] h-[440px] flex items-center justify-center">
+              <div className="relative w-full h-full max-w-[500px] max-h-[560px] mx-auto">
                 <motion.div
                   animate={{ y: [-8, 8, -8] }}
                   transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
-                  className="w-[380px] h-[380px] bg-white rounded-[32px] shadow-[0_25px_60px_rgba(39,89,140,0.12)] flex items-center justify-center relative border border-slate-100"
+                  className="w-full h-full rounded-[2.5rem] sm:rounded-[3.5rem] shadow-[0_25px_60px_rgba(39,89,140,0.12)] relative overflow-hidden border-4 border-white/50"
                 >
-                  <div className="relative w-[240px] h-[240px] rounded-full flex items-center justify-center" style={{ background: 'conic-gradient(#27598C 0deg 90deg, #589C47 90deg 200deg, #E5D81A 200deg 270deg, #1a3d66 270deg 360deg)' }}>
-                    <div className="absolute inset-[22px] bg-white rounded-full flex items-center justify-center">
-                      <div className="relative w-[155px] h-[155px] rounded-full flex items-center justify-center" style={{ background: 'conic-gradient(#589C47 0deg 130deg, #27598C 130deg 240deg, #E5D81A 240deg 360deg)' }}>
-                        <div className="absolute inset-[14px] bg-white rounded-full flex items-center justify-center">
-                          <GraduationCap className="w-9 h-9 text-[#27598C]" />
-                        </div>
-                      </div>
-                    </div>
+                  <Image 
+                    src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1470&auto=format&fit=crop" 
+                    alt="School Campus" 
+                    fill 
+                    className="object-cover" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0D2640]/30 to-transparent"></div>
+                </motion.div>
+
+                {/* Floating Badges over the image */}
+                <motion.div animate={{ y: [-5, 5, -5] }} transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }} className="absolute -top-4 -left-4 sm:-top-6 sm:left-4 w-14 h-14 sm:w-16 sm:h-16 bg-[#E5D81A] rounded-full shadow-[0_12px_24px_rgba(229,216,26,0.4)] flex items-center justify-center z-20">
+                  <Trophy className="w-6 h-6 sm:w-7 sm:h-7 text-[#0D2640]" />
+                </motion.div>
+                
+                <motion.div animate={{ y: [5, -5, 5] }} transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut', delay: 1 }} className="absolute top-10 -right-4 sm:-right-8 bg-white rounded-[18px] p-3 sm:p-4 shadow-[0_15px_35px_rgba(39,89,140,0.12)] flex flex-col items-center gap-2 sm:gap-3 z-20 w-[140px] sm:w-[170px] border border-slate-100">
+                  <span className="text-[10px] sm:text-xs font-extrabold text-[#0D2640]">Our Students</span>
+                  <div className="flex -space-x-3">
+                    {['bg-[#27598C]/20', 'bg-[#589C47]/20', 'bg-[#E5D81A]/30'].map((c, i) => <div key={i} className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full ${c} border-2 border-white`}></div>)}
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[#0D2640] border-2 border-white flex items-center justify-center text-white text-[8px] sm:text-[9px] font-bold">+2K</div>
                   </div>
-                  <motion.div animate={{ y: [-5, 5, -5] }} transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }} className="absolute -top-6 left-14 w-16 h-16 bg-[#E5D81A] rounded-full shadow-[0_12px_24px_rgba(229,216,26,0.4)] flex items-center justify-center z-20">
-                    <Trophy className="w-7 h-7 text-[#0D2640]" />
-                  </motion.div>
-                  <motion.div animate={{ y: [5, -5, 5] }} transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut', delay: 1 }} className="absolute top-6 -right-10 bg-white rounded-[18px] p-4 shadow-[0_15px_35px_rgba(39,89,140,0.12)] flex flex-col items-center gap-3 z-20 w-[170px] border border-slate-100">
-                    <span className="text-xs font-extrabold text-[#0D2640]">Our Students</span>
-                    <div className="flex -space-x-3">
-                      {['bg-[#27598C]/20', 'bg-[#589C47]/20', 'bg-[#E5D81A]/30'].map((c, i) => <div key={i} className={`w-8 h-8 rounded-full ${c} border-2 border-white`}></div>)}
-                      <div className="w-8 h-8 rounded-full bg-[#0D2640] border-2 border-white flex items-center justify-center text-white text-[9px] font-bold">+2K</div>
-                    </div>
-                  </motion.div>
-                  <motion.div animate={{ y: [-6, 6, -6] }} transition={{ repeat: Infinity, duration: 5.5, ease: 'easeInOut', delay: 0.5 }} className="absolute bottom-14 -left-12 bg-white rounded-[18px] p-4 px-5 shadow-[0_15px_35px_rgba(39,89,140,0.12)] flex items-center gap-4 z-20 border border-slate-100">
-                    <div className="w-10 h-10 rounded-full bg-[#589C47]"></div>
-                    <div className="space-y-2 w-16">
-                      <div className="h-2 w-full bg-slate-100 rounded-full"></div>
-                      <div className="h-2 w-4/5 bg-slate-100 rounded-full"></div>
-                    </div>
-                  </motion.div>
-                  <motion.div animate={{ y: [8, -8, 8] }} transition={{ repeat: Infinity, duration: 6.5, ease: 'easeInOut', delay: 1.5 }} className="absolute -bottom-8 -right-4 w-[240px] bg-white rounded-[24px] shadow-[0_20px_50px_rgba(39,89,140,0.15)] p-5 z-20 border border-slate-100">
-                    <div className="grid grid-cols-2 gap-y-4 gap-x-3">
-                      {[['Modern', 'Campus'], ['Expert', 'Faculty'], ['Smart', 'Classes'], ['Sports', 'Complex']].map((item, idx) => (
-                        <div key={idx} className="flex items-start gap-2">
-                          <div className="w-5 h-5 rounded-full bg-[#589C47]/15 flex items-center justify-center shrink-0 mt-0.5">
-                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#589C47" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                          </div>
-                          <div className="flex flex-col text-[11px] font-bold text-[#0D2640] leading-tight"><span>{item[0]}</span><span>{item[1]}</span></div>
+                </motion.div>
+                
+                <motion.div animate={{ y: [8, -8, 8] }} transition={{ repeat: Infinity, duration: 6.5, ease: 'easeInOut', delay: 1.5 }} className="absolute -bottom-6 -left-4 sm:-left-8 w-[200px] sm:w-[240px] bg-white rounded-[20px] sm:rounded-[24px] shadow-[0_20px_50px_rgba(39,89,140,0.15)] p-4 sm:p-5 z-20 border border-slate-100">
+                  <div className="grid grid-cols-2 gap-y-3 gap-x-2 sm:gap-x-3">
+                    {[['Modern', 'Campus'], ['Expert', 'Faculty'], ['Smart', 'Classes'], ['Sports', 'Complex']].map((item, idx) => (
+                      <div key={idx} className="flex items-start gap-1 sm:gap-2">
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[#589C47]/15 flex items-center justify-center shrink-0 mt-0.5">
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#589C47" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                         </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                  <div className="absolute bottom-8 left-10 w-3 h-3 bg-[#E5D81A] rounded-full"></div>
+                        <div className="flex flex-col text-[9px] sm:text-[11px] font-bold text-[#0D2640] leading-tight"><span>{item[0]}</span><span>{item[1]}</span></div>
+                      </div>
+                    ))}
+                  </div>
                 </motion.div>
               </div>
             </motion.div>
