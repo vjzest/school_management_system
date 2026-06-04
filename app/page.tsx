@@ -69,12 +69,12 @@ export default function Page() {
               </div>
             </motion.div>
 
-            {/* Right Graphic — visible on lg+ */}
+            {/* Right Graphic — all screen sizes, shorter on mobile */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="relative h-[400px] lg:h-[520px] w-full hidden lg:flex items-center justify-center"
+              className="relative h-[260px] sm:h-[380px] lg:h-[520px] w-full flex items-center justify-center"
             >
               <div className="relative w-full max-w-[440px] h-[440px] flex items-center justify-center">
                 <motion.div

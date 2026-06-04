@@ -50,7 +50,7 @@ export default function AdmissionsPage() {
               </div>
             </motion.div>
 
-            <div className="relative h-[580px] w-full hidden md:block">
+            <div className="relative h-[260px] sm:h-[400px] lg:h-[560px] w-full">
               <div className="absolute inset-0 flex items-center justify-center">
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.2 }} className="w-[420px] h-[520px] rounded-[40px] overflow-hidden relative shadow-[0_30px_60px_rgba(39,89,140,0.12)] border border-slate-100 z-10">
                   <Image src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1470&auto=format&fit=crop" alt="Admissions" fill className="object-cover" />
