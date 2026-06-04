@@ -7,6 +7,7 @@ import { Users, Award, ArrowRight, BookOpen, Star, Trophy, Shield, GraduationCap
 import Image from 'next/image'
 import Navbar from '@/components/landing/navbar'
 import Footer from '@/components/landing/footer'
+import Chatbot from '@/components/landing/chatbot'
 
 export default function Page() {
   return (
@@ -270,6 +271,7 @@ export default function Page() {
         </div>
       </section>
 
+      <Chatbot />
       <Footer />
     </div>
   )
