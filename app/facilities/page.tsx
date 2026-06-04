@@ -51,29 +51,40 @@ export default function FacilitiesPage() {
             </motion.div>
 
             {/* Right collage */}
-            <div className="relative h-[260px] sm:h-[400px] lg:h-[560px] w-full">
+            <div className="relative h-[350px] sm:h-[450px] lg:h-[560px] w-full mt-10 lg:mt-0">
               <div className="absolute inset-0 flex items-center justify-center">
-                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="w-[420px] h-[520px] rounded-[40px] overflow-hidden relative shadow-[0_30px_60px_rgba(39,89,140,0.12)] border border-slate-100 z-10">
+                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="w-full h-full max-w-[420px] max-h-[520px] rounded-3xl sm:rounded-[40px] overflow-hidden relative shadow-[0_30px_60px_rgba(39,89,140,0.12)] border border-slate-100 z-10">
                   <Image src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=1632&auto=format&fit=crop" alt="Campus" fill className="object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0D2640]/80 via-transparent to-transparent"></div>
-                  <div className="absolute bottom-10 left-10 text-white">
-                    <h3 className="text-2xl font-extrabold mb-1">World-Class Campus</h3>
-                    <p className="text-white/80 text-sm">Built for the future.</p>
+                  <div className="absolute bottom-6 sm:bottom-10 left-6 sm:left-10 text-white">
+                    <h3 className="text-xl sm:text-2xl font-extrabold mb-1">World-Class Campus</h3>
+                    <p className="text-white/80 text-xs sm:text-sm">Built for the future.</p>
                   </div>
                 </motion.div>
-                {[
-                  { Icon: BookOpen, t: 'Smart Library', d: '8000+ Books & e-Resources', pos: 'top-8 left-0', bg: 'bg-[#27598C]/10 text-[#27598C]', delay: 0 },
-                  { Icon: Dumbbell, t: 'Sports Complex', d: 'Multi-sport facility', pos: 'bottom-28 -left-8', bg: 'bg-[#589C47]/10 text-[#589C47]', delay: 1 },
-                  { Icon: MonitorPlay, t: 'Smart Classes', d: 'Interactive boards', pos: 'top-36 -right-8', bg: 'bg-[#E5D81A]/20 text-yellow-700', delay: 0.5 },
-                ].map((item, i) => (
-                  <motion.div key={i} animate={{ y: [i % 2 === 0 ? -12 : 12, i % 2 === 0 ? 12 : -12, i % 2 === 0 ? -12 : 12] }} transition={{ repeat: Infinity, duration: 5 + i, ease: 'easeInOut', delay: item.delay }} className={`absolute ${item.pos} bg-white p-5 rounded-[24px] shadow-xl border border-slate-100 z-20 flex items-center gap-4 w-58`}>
-                    <div className={`w-12 h-12 ${item.bg} rounded-xl flex items-center justify-center`}><item.Icon className="w-6 h-6" /></div>
-                    <div>
-                      <h4 className="font-extrabold text-[#0D2640] text-sm">{item.t}</h4>
-                      <p className="text-xs text-slate-500">{item.d}</p>
-                    </div>
-                  </motion.div>
-                ))}
+
+                <motion.div animate={{ y: [-8, 8, -8] }} transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }} className="absolute top-4 sm:top-10 left-0 sm:-left-4 lg:left-0 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-[24px] shadow-xl border border-slate-100 z-20 flex items-center gap-3 sm:gap-4 w-44 sm:w-58">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#27598C]/10 rounded-xl flex items-center justify-center text-[#27598C] shrink-0"><BookOpen className="w-5 h-5 sm:w-6 sm:h-6" /></div>
+                  <div>
+                    <h4 className="font-extrabold text-[#0D2640] text-xs sm:text-sm">Smart Library</h4>
+                    <p className="text-[10px] sm:text-xs text-slate-500 hidden sm:block">8000+ Books</p>
+                  </div>
+                </motion.div>
+
+                <motion.div animate={{ y: [8, -8, 8] }} transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut', delay: 1 }} className="absolute bottom-10 sm:bottom-32 left-0 sm:-left-8 lg:-left-4 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-[24px] shadow-xl border border-slate-100 z-20 flex items-center gap-3 sm:gap-4 w-48 sm:w-58">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#589C47]/10 rounded-xl flex items-center justify-center text-[#589C47] shrink-0"><Dumbbell className="w-5 h-5 sm:w-6 sm:h-6" /></div>
+                  <div>
+                    <h4 className="font-extrabold text-[#0D2640] text-xs sm:text-sm">Sports Complex</h4>
+                    <p className="text-[10px] sm:text-xs text-slate-500">Multi-sport facility</p>
+                  </div>
+                </motion.div>
+
+                <motion.div animate={{ y: [-6, 6, -6] }} transition={{ repeat: Infinity, duration: 5.5, ease: 'easeInOut', delay: 0.5 }} className="absolute top-24 sm:top-32 right-0 sm:-right-8 lg:-right-4 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-[24px] shadow-xl border border-slate-100 z-20 flex items-center gap-3 sm:gap-4 w-44 sm:w-58">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#E5D81A]/20 rounded-xl flex items-center justify-center text-yellow-700 shrink-0"><MonitorPlay className="w-5 h-5 sm:w-6 sm:h-6" /></div>
+                  <div>
+                    <h4 className="font-extrabold text-[#0D2640] text-xs sm:text-sm">Smart Classes</h4>
+                    <p className="text-[10px] sm:text-xs text-slate-500 hidden sm:block">Interactive boards</p>
+                  </div>
+                </motion.div>
               </div>
             </div>
           </div>

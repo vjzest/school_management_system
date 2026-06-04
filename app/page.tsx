@@ -34,7 +34,7 @@ export default function Page() {
                 Welcome to Royal Public School
               </div>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[56px] font-[800] text-[#0D2640] tracking-tight leading-[1.1]">
-                Shaping The <br className="hidden sm:block"/>
+                Shaping The <br className="hidden sm:block" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#27598C] via-[#589C47] to-[#27598C]">Leaders of Tomorrow</span>
               </h1>
               <p className="text-base sm:text-lg text-slate-500 leading-relaxed max-w-xl mx-auto lg:mx-0">
@@ -233,7 +233,7 @@ export default function Page() {
               <div key={idx} className="bg-white p-7 sm:p-8 rounded-[24px] shadow-sm relative border border-slate-100">
                 <div className="text-5xl text-[#E5D81A]/40 font-serif absolute top-4 left-5 leading-none">"</div>
                 <div className="flex gap-1 mb-4 mt-5">
-                  {[1,2,3,4,5].map(s => <Star key={s} className="w-3.5 h-3.5 fill-[#E5D81A] text-[#E5D81A]" />)}
+                  {[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-3.5 h-3.5 fill-[#E5D81A] text-[#E5D81A]" />)}
                 </div>
                 <p className="text-slate-600 leading-relaxed mb-6 text-sm">{test.text}</p>
                 <div className="flex items-center gap-3">
