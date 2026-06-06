@@ -7,8 +7,44 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, FileText, CheckCircle, Upload, Star, Shield, GraduationCap } from 'lucide-react'
 import Link from 'next/link'
+import { useState } from 'react'
+import axios from 'axios'
+import { toast } from 'sonner'
 
 export default function AdmissionsPage() {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    parentEmail: '',
+    phone: '',
+    classApplied: ''
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleChange = (e: any) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault()
+    if (!formData.firstName || !formData.lastName || !formData.parentEmail || !formData.phone || !formData.classApplied) {
+      toast.error("Please fill all required fields")
+      return
+    }
+    
+    setIsSubmitting(true)
+    try {
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admissions/apply`, formData)
+      if (res.data.success) {
+        toast.success("Application submitted successfully!")
+        setFormData({ firstName: '', lastName: '', parentEmail: '', phone: '', classApplied: '' })
+      }
+    } catch (err) {
+      toast.error("Failed to submit application")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
   return (
     <div className="min-h-screen bg-[#F4F7FB] font-sans text-slate-900 overflow-x-hidden">
       <Navbar />
@@ -33,9 +69,11 @@ export default function AdmissionsPage() {
                 Join Royal Public School's vibrant community of scholars. We are looking for bright, passionate students ready to excel and make a difference.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-10">
-                <Button className="w-full sm:w-auto bg-[#27598C] hover:bg-[#1a3d66] text-white font-bold h-12 sm:h-14 px-8 rounded-full shadow-lg shadow-[#27598C]/25 transition-all text-sm sm:text-base flex items-center justify-center gap-2">
-                  Apply Online Now <ArrowRight className="w-5 h-5" />
-                </Button>
+                <a href="#application-form" className="w-full sm:w-auto">
+                  <Button className="w-full sm:w-auto bg-[#27598C] hover:bg-[#1a3d66] text-white font-bold h-12 sm:h-14 px-8 rounded-full shadow-lg shadow-[#27598C]/25 transition-all text-sm sm:text-base flex items-center justify-center gap-2">
+                    Apply Online Now <ArrowRight className="w-5 h-5" />
+                  </Button>
+                </a>
                 <Button className="w-full sm:w-auto bg-white text-[#27598C] border-2 border-[#27598C]/30 hover:border-[#27598C] font-bold h-12 sm:h-14 px-8 rounded-full transition-all text-sm sm:text-base">
                   Admission Guidelines
                 </Button>
@@ -125,7 +163,7 @@ export default function AdmissionsPage() {
       </section>
 
       {/* APPLICATION FORM */}
-      <section className="py-24 max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+      <section id="application-form" className="py-24 max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 scroll-mt-20">
         <div className="bg-white rounded-[36px] border border-slate-100 shadow-[0_20px_60px_rgba(39,89,140,0.07)] overflow-hidden flex flex-col lg:flex-row">
           {/* Left Info */}
           <div className="bg-[#0D2640] lg:w-2/5 p-12 lg:p-14 text-white relative overflow-hidden">
@@ -156,36 +194,36 @@ export default function AdmissionsPage() {
 
           {/* Right Form */}
           <div className="lg:w-3/5 p-12 lg:p-14 bg-white">
-            <form className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="space-y-2">
                   <label className="font-bold text-[#0D2640] text-sm">First Name</label>
-                  <input type="text" className="w-full bg-[#F4F7FB] border border-slate-200 rounded-xl px-5 py-4 focus:outline-none focus:border-[#27598C] focus:ring-1 focus:ring-[#27598C] transition-all text-sm" placeholder="First Name" />
+                  <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} className="w-full bg-[#F4F7FB] border border-slate-200 rounded-xl px-5 py-4 focus:outline-none focus:border-[#27598C] focus:ring-1 focus:ring-[#27598C] transition-all text-sm" placeholder="First Name" />
                 </div>
                 <div className="space-y-2">
                   <label className="font-bold text-[#0D2640] text-sm">Last Name</label>
-                  <input type="text" className="w-full bg-[#F4F7FB] border border-slate-200 rounded-xl px-5 py-4 focus:outline-none focus:border-[#27598C] focus:ring-1 focus:ring-[#27598C] transition-all text-sm" placeholder="Last Name" />
+                  <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} className="w-full bg-[#F4F7FB] border border-slate-200 rounded-xl px-5 py-4 focus:outline-none focus:border-[#27598C] focus:ring-1 focus:ring-[#27598C] transition-all text-sm" placeholder="Last Name" />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="space-y-2">
                   <label className="font-bold text-[#0D2640] text-sm">Parent's Email</label>
-                  <input type="email" className="w-full bg-[#F4F7FB] border border-slate-200 rounded-xl px-5 py-4 focus:outline-none focus:border-[#27598C] focus:ring-1 focus:ring-[#27598C] transition-all text-sm" placeholder="parent@email.com" />
+                  <input type="email" name="parentEmail" value={formData.parentEmail} onChange={handleChange} className="w-full bg-[#F4F7FB] border border-slate-200 rounded-xl px-5 py-4 focus:outline-none focus:border-[#27598C] focus:ring-1 focus:ring-[#27598C] transition-all text-sm" placeholder="parent@email.com" />
                 </div>
                 <div className="space-y-2">
                   <label className="font-bold text-[#0D2640] text-sm">Phone Number</label>
-                  <input type="tel" className="w-full bg-[#F4F7FB] border border-slate-200 rounded-xl px-5 py-4 focus:outline-none focus:border-[#27598C] focus:ring-1 focus:ring-[#27598C] transition-all text-sm" placeholder="+91 98765 43210" />
+                  <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full bg-[#F4F7FB] border border-slate-200 rounded-xl px-5 py-4 focus:outline-none focus:border-[#27598C] focus:ring-1 focus:ring-[#27598C] transition-all text-sm" placeholder="+91 98765 43210" />
                 </div>
               </div>
               <div className="space-y-2">
                 <label className="font-bold text-[#0D2640] text-sm">Class Applying For</label>
-                <select className="w-full bg-[#F4F7FB] border border-slate-200 rounded-xl px-5 py-4 focus:outline-none focus:border-[#27598C] focus:ring-1 focus:ring-[#27598C] transition-all text-slate-500 text-sm appearance-none">
-                  <option>Select class...</option>
-                  <option>Nursery / KG</option>
-                  <option>Class I – V (Primary)</option>
-                  <option>Class VI – VIII (Middle)</option>
-                  <option>Class IX – X (Secondary)</option>
-                  <option>Class XI – XII (Senior Secondary)</option>
+                <select name="classApplied" value={formData.classApplied} onChange={handleChange} className="w-full bg-[#F4F7FB] border border-slate-200 rounded-xl px-5 py-4 focus:outline-none focus:border-[#27598C] focus:ring-1 focus:ring-[#27598C] transition-all text-slate-500 text-sm appearance-none">
+                  <option value="">Select class...</option>
+                  <option value="Nursery / KG">Nursery / KG</option>
+                  <option value="Class I – V (Primary)">Class I – V (Primary)</option>
+                  <option value="Class VI – VIII (Middle)">Class VI – VIII (Middle)</option>
+                  <option value="Class IX – X (Secondary)">Class IX – X (Secondary)</option>
+                  <option value="Class XI – XII (Senior Secondary)">Class XI – XII (Senior Secondary)</option>
                 </select>
               </div>
               <div className="border-2 border-dashed border-slate-200 hover:border-[#27598C] bg-[#F4F7FB] rounded-[20px] p-7 text-center transition-colors cursor-pointer group mt-4">
@@ -193,8 +231,8 @@ export default function AdmissionsPage() {
                 <p className="font-bold text-[#0D2640] text-sm">Drag & Drop Previous Report Card</p>
                 <p className="text-xs text-slate-500 mt-1">PDF or Image (Max 5MB)</p>
               </div>
-              <Button className="w-full bg-[#27598C] hover:bg-[#1a3d66] text-white h-14 text-base font-extrabold rounded-xl shadow-lg shadow-[#27598C]/25 transition-all mt-4">
-                Submit Application
+              <Button type="submit" disabled={isSubmitting} className="w-full bg-[#27598C] hover:bg-[#1a3d66] text-white h-14 text-base font-extrabold rounded-xl shadow-lg shadow-[#27598C]/25 transition-all mt-4">
+                {isSubmitting ? 'Submitting...' : 'Submit Application'}
               </Button>
             </form>
           </div>

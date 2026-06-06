@@ -42,7 +42,7 @@ export default function Page() {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4">
-                <Link href="/admissions" className="w-full sm:w-auto">
+                <Link href="/admissions#application-form" className="w-full sm:w-auto">
                   <Button className="w-full sm:w-auto bg-[#27598C] hover:bg-[#1a3d66] text-white font-bold h-12 sm:h-14 px-8 rounded-full shadow-lg shadow-[#27598C]/30 transition-all text-sm sm:text-base flex items-center justify-center gap-2">
                     Admissions Open <ArrowRight className="w-4 h-4" />
                   </Button>
@@ -256,7 +256,7 @@ export default function Page() {
               </h2>
               <p className="text-slate-300 text-sm sm:text-base">Admissions open for 2025–26. Limited seats available. Apply early to secure your spot.</p>
             </div>
-            <Link href="/admissions" className="z-10 w-full md:w-auto shrink-0">
+            <Link href="/admissions#application-form" className="z-10 w-full md:w-auto shrink-0">
               <Button className="w-full md:w-auto bg-[#E5D81A] hover:bg-yellow-300 text-[#0D2640] h-12 sm:h-14 px-8 text-sm sm:text-base font-extrabold rounded-full shadow-xl transition-all flex items-center justify-center gap-2 whitespace-nowrap">
                 Apply for Admission <ArrowRight className="w-4 h-4" />
               </Button>

@@ -34,6 +34,7 @@ const menuItems = [
   { label: 'Teachers', icon: BookOpen, href: '/admin/teachers' },
   { label: 'Attendance', icon: Clock, href: '/admin/attendance' },
   { label: 'Fees', icon: CreditCard, href: '/admin/fees' },
+  { label: 'Admissions', icon: BookOpen, href: '/admin/admissions' },
   { label: 'Exams', icon: Award, href: '/admin/exams' },
   { label: 'Results', icon: BookMarked, href: '/admin/results' },
   { label: 'Timetable', icon: Clock, href: '/admin/timetable' },
