@@ -2,7 +2,9 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { useAppDispatch } from '@/lib/hooks'
+import { logout } from '@/lib/features/authSlice'
 import {
   LayoutDashboard,
   Users,
@@ -35,10 +37,6 @@ const menuItems = [
   { label: 'Exams', icon: Award, href: '/admin/exams' },
   { label: 'Results', icon: BookMarked, href: '/admin/results' },
   { label: 'Timetable', icon: Clock, href: '/admin/timetable' },
-  { label: 'Library', icon: BookMarked, href: '/admin/library' },
-  { label: 'Transport', icon: Truck, href: '/admin/transport' },
-  { label: 'Hostel', icon: HomeIcon, href: '/admin/hostel' },
-  { label: 'Payroll', icon: Wallet, href: '/admin/payroll' },
 ]
 
 const bottomItems = [
@@ -48,6 +46,19 @@ const bottomItems = [
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname()
+  const dispatch = useAppDispatch()
+  const router = useRouter()
+
+  const handleLinkClick = () => {
+    if (window.innerWidth < 1024 && onClose) {
+      onClose()
+    }
+  }
+
+  const handleLogout = () => {
+    dispatch(logout())
+    router.push('/login')
+  }
 
   return (
     <>
@@ -94,7 +105,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={onClose}
+                onClick={handleLinkClick}
                 className={cn(
                   "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 font-semibold text-sm",
                   isActive
@@ -122,7 +133,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={onClose}
+                onClick={handleLinkClick}
                 className={cn(
                   "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 font-semibold text-sm",
                   isActive
@@ -136,14 +147,14 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               </Link>
             )
           })}
-          <Link
-            href="/"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-red-400 hover:bg-white/5 transition-all font-semibold text-sm"
+          <button
+            onClick={handleLogout}
+            className="flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-red-400 hover:bg-white/5 transition-all font-semibold text-sm"
             title={!isOpen ? 'Logout' : ''}
           >
             <LogOut className="w-5 h-5 flex-shrink-0" />
             {isOpen && <span>Logout</span>}
-          </Link>
+          </button>
         </div>
       </aside>
     </>

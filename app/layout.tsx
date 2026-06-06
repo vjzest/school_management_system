@@ -63,6 +63,9 @@ export const metadata: Metadata = {
   },
 }
 
+import StoreProvider from "@/lib/StoreProvider"
+import { Toaster } from 'sonner'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -71,8 +74,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-background">
       <body className="font-sans antialiased">
-        {children}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        <StoreProvider>
+          {children}
+          {process.env.NODE_ENV === 'production' && <Analytics />}
+          <Toaster position="top-right" richColors />
+        </StoreProvider>
       </body>
     </html>
   )

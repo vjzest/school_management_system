@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAppSelector } from '@/lib/hooks'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Menu, Bell, Shield } from 'lucide-react'
@@ -8,6 +10,19 @@ import Sidebar from '@/components/admin/sidebar'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [isClient, setIsClient] = useState(false)
+  const { token, admin } = useAppSelector((state) => state.auth)
+  const router = useRouter()
+
+  useEffect(() => {
+    setIsClient(true)
+    if (!token) {
+      router.push('/login')
+    }
+  }, [token, router])
+
+  if (!isClient) return null;
+  if (!token) return null;
 
   return (
     <div className="flex h-screen bg-[#F4F7FB] overflow-hidden">
@@ -44,8 +59,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
             <div className="hidden sm:flex items-center gap-3">
               <div className="text-right hidden md:block">
-                <p className="text-sm font-bold text-[#0D2640] leading-none">Admin User</p>
-                <p className="text-xs text-[#589C47] font-semibold mt-0.5">Super Admin</p>
+                <p className="text-sm font-bold text-[#0D2640] leading-none">{admin?.name || 'Admin User'}</p>
+                <p className="text-xs text-[#589C47] font-semibold mt-0.5">{admin?.role === 'SUPER_ADMIN' ? 'Super Admin' : 'Staff Admin'}</p>
               </div>
               <div className="w-9 h-9 bg-[#0D2640] rounded-full flex items-center justify-center text-[#E5D81A] font-extrabold text-sm shadow-md">
                 <Shield className="w-4 h-4" />

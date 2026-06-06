@@ -1,17 +1,12 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { useAppSelector } from '@/lib/hooks'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Bell, AlertCircle, CheckCircle, InfoIcon } from 'lucide-react'
-
-const notifications = [
-  { id: 1, title: 'Exam Scheduled', message: 'Mid-term exam for Class 10-A scheduled on June 15', type: 'info', time: '2 hours ago' },
-  { id: 2, title: 'Attendance Alert', message: 'Low attendance for Class 10-B (65%)', type: 'warning', time: '4 hours ago' },
-  { id: 3, title: 'Fees Reminder', message: '5 students have pending fees', type: 'alert', time: '1 day ago' },
-  { id: 4, title: 'New Admission', message: 'New student admission request received', type: 'success', time: '2 days ago' },
-  { id: 5, title: 'System Update', message: 'System maintenance scheduled for next week', type: 'info', time: '3 days ago' },
-]
+import { toast } from 'sonner'
 
 const getTypeColor = (type: string) => {
   switch (type) {
@@ -44,6 +39,28 @@ const getTypeIcon = (type: string) => {
 }
 
 export default function NotificationsPage() {
+  const { token } = useAppSelector((state: any) => state.auth)
+  const [notifications, setNotifications] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    if (token) {
+      axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/reports`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => {
+        if (res.data.success) {
+          setNotifications(res.data.data)
+        }
+      }).catch(err => {
+        toast.error("Failed to load notifications")
+      }).finally(() => {
+        setIsLoading(false)
+      })
+    }
+  }, [token])
+
+  if (isLoading) return <div className="p-8">Loading notifications...</div>
+
   return (
     <div className="p-8 space-y-6">
       <div>
@@ -57,9 +74,9 @@ export default function NotificationsPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {notifications.map((notification, index) => (
+            {notifications.length > 0 ? notifications.map((notification, index) => (
               <motion.div
-                key={notification.id}
+                key={notification._id || index}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
@@ -72,11 +89,13 @@ export default function NotificationsPage() {
                   <div className="flex-1">
                     <h3 className="font-semibold text-foreground">{notification.title}</h3>
                     <p className="text-sm text-muted-foreground mt-1">{notification.message}</p>
-                    <p className="text-xs text-muted-foreground mt-2">{notification.time}</p>
+                    <p className="text-xs text-muted-foreground mt-2">{notification.time || new Date(notification.createdAt).toLocaleDateString()}</p>
                   </div>
                 </div>
               </motion.div>
-            ))}
+            )) : (
+              <p className="text-sm text-muted-foreground p-4 text-center italic">No notifications right now.</p>
+            )}
           </div>
         </CardContent>
       </Card>

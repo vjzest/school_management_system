@@ -82,11 +82,11 @@ export default function Navbar() {
 
           {/* Desktop Buttons */}
           <div className="hidden lg:flex gap-4 z-10 items-center">
-            <Link href="/student">
+            {/* <Link href="/student">
               <button className="text-[#27598C] font-bold hover:text-[#1a3d66] transition-colors">
                 Student Portal
               </button>
-            </Link>
+            </Link> */}
             <Link href="/admissions">
               <Button className="bg-[#27598C] hover:bg-[#1a3d66] text-white font-bold rounded-full px-6 h-11 shadow-lg shadow-[#27598C]/30 transition-all flex items-center gap-2">
                 Apply Now <ArrowRight className="w-4 h-4" />
@@ -127,11 +127,11 @@ export default function Navbar() {
                   </Link>
                 ))}
                 <div className="pt-4 flex flex-col gap-3">
-                  <Link href="/student" onClick={() => setMobileOpen(false)}>
+                  {/* <Link href="/student" onClick={() => setMobileOpen(false)}>
                     <Button variant="outline" className="w-full h-12 font-bold border-[#27598C] text-[#27598C] rounded-full">
                       Student Portal
                     </Button>
-                  </Link>
+                  </Link> */}
                   <Link href="/admissions" onClick={() => setMobileOpen(false)}>
                     <Button className="w-full h-12 bg-[#27598C] hover:bg-[#1a3d66] text-white font-bold rounded-full shadow-lg flex items-center justify-center gap-2">
                       Apply Now <ArrowRight className="w-4 h-4" />

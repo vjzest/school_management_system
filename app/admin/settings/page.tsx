@@ -1,16 +1,74 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { useAppSelector } from '@/lib/hooks'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Save } from 'lucide-react'
+import { toast } from 'sonner'
 
 export default function SettingsPage() {
-  const [schoolName, setSchoolName] = useState('Central High School')
-  const [email, setEmail] = useState('admin@school.com')
-  const [phone, setPhone] = useState('+1-555-0123')
-  const [address, setAddress] = useState('123 Education Street, City, State 12345')
+  const { token } = useAppSelector((state: any) => state.auth)
+
+  const [settings, setSettings] = useState({
+    schoolName: '',
+    email: '',
+    phone: '',
+    address: '',
+    academicYear: '',
+    totalClasses: '',
+    emailNotifications: false,
+    smsAlerts: false,
+    darkMode: false
+  })
+
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+
+  useEffect(() => {
+    if (token) {
+      setIsLoading(true)
+      axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/settings`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => {
+        if (res.data.success && res.data.data) {
+          setSettings(res.data.data)
+        }
+      }).catch(err => {
+        toast.error("Failed to load settings")
+      }).finally(() => {
+        setIsLoading(false)
+      })
+    }
+  }, [token])
+
+  const handleSave = async () => {
+    setIsSaving(true)
+    try {
+      const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/settings`, settings, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      if (res.data.success) {
+        toast.success("Settings updated successfully!")
+      }
+    } catch (err) {
+      toast.error("Failed to update settings")
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handleChange = (e: any) => {
+    const { name, value, type, checked } = e.target
+    setSettings(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }))
+  }
+
+  if (isLoading) return <div className="p-8">Loading settings...</div>
 
   return (
     <div className="p-8 space-y-6">
@@ -19,7 +77,6 @@ export default function SettingsPage() {
         <p className="text-muted-foreground">Manage school information and preferences</p>
       </div>
 
-      {/* School Information */}
       <Card className="border-border bg-card">
         <CardHeader>
           <CardTitle className="text-foreground">School Information</CardTitle>
@@ -27,45 +84,27 @@ export default function SettingsPage() {
         <CardContent className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">School Name</label>
-            <Input
-              value={schoolName}
-              onChange={(e) => setSchoolName(e.target.value)}
-              className="bg-secondary border-border"
-            />
+            <Input name="schoolName" value={settings.schoolName} onChange={handleChange} className="bg-secondary border-border" />
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Email</label>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="bg-secondary border-border"
-            />
+            <Input type="email" name="email" value={settings.email} onChange={handleChange} className="bg-secondary border-border" />
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Phone</label>
-            <Input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="bg-secondary border-border"
-            />
+            <Input name="phone" value={settings.phone} onChange={handleChange} className="bg-secondary border-border" />
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Address</label>
-            <Input
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="bg-secondary border-border"
-            />
+            <Input name="address" value={settings.address} onChange={handleChange} className="bg-secondary border-border" />
           </div>
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button onClick={handleSave} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-primary-foreground">
             <Save className="w-4 h-4 mr-2" />
-            Save Changes
+            {isSaving ? 'Saving...' : 'Save Changes'}
           </Button>
         </CardContent>
       </Card>
 
-      {/* Academic Settings */}
       <Card className="border-border bg-card">
         <CardHeader>
           <CardTitle className="text-foreground">Academic Settings</CardTitle>
@@ -73,26 +112,19 @@ export default function SettingsPage() {
         <CardContent className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Academic Year</label>
-            <Input
-              value="2024-2025"
-              className="bg-secondary border-border"
-            />
+            <Input name="academicYear" value={settings.academicYear} onChange={handleChange} className="bg-secondary border-border" />
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">Total Classes</label>
-            <Input
-              value="20"
-              className="bg-secondary border-border"
-            />
+            <Input name="totalClasses" value={settings.totalClasses} onChange={handleChange} className="bg-secondary border-border" />
           </div>
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button onClick={handleSave} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-primary-foreground">
             <Save className="w-4 h-4 mr-2" />
-            Save Changes
+            {isSaving ? 'Saving...' : 'Save Changes'}
           </Button>
         </CardContent>
       </Card>
 
-      {/* System Settings */}
       <Card className="border-border bg-card">
         <CardHeader>
           <CardTitle className="text-foreground">System Settings</CardTitle>
@@ -101,25 +133,24 @@ export default function SettingsPage() {
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 bg-secondary rounded-lg">
               <span className="text-foreground font-medium">Email Notifications</span>
-              <input type="checkbox" defaultChecked className="w-4 h-4" />
+              <input type="checkbox" name="emailNotifications" checked={settings.emailNotifications} onChange={handleChange} className="w-4 h-4" />
             </div>
             <div className="flex items-center justify-between p-3 bg-secondary rounded-lg">
               <span className="text-foreground font-medium">SMS Alerts</span>
-              <input type="checkbox" className="w-4 h-4" />
+              <input type="checkbox" name="smsAlerts" checked={settings.smsAlerts} onChange={handleChange} className="w-4 h-4" />
             </div>
             <div className="flex items-center justify-between p-3 bg-secondary rounded-lg">
               <span className="text-foreground font-medium">Dark Mode</span>
-              <input type="checkbox" className="w-4 h-4" />
+              <input type="checkbox" name="darkMode" checked={settings.darkMode} onChange={handleChange} className="w-4 h-4" />
             </div>
           </div>
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button onClick={handleSave} disabled={isSaving} className="bg-primary hover:bg-primary/90 text-primary-foreground">
             <Save className="w-4 h-4 mr-2" />
-            Save Preferences
+            {isSaving ? 'Saving...' : 'Save Preferences'}
           </Button>
         </CardContent>
       </Card>
 
-      {/* Help & Support */}
       <Card className="border-border bg-card">
         <CardHeader>
           <CardTitle className="text-foreground">Help & Support</CardTitle>

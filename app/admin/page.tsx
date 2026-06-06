@@ -4,21 +4,11 @@ import { motion } from 'framer-motion'
 import { Users, BookOpen, CreditCard, Award, TrendingUp, UserCheck, AlertCircle, Calendar } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { useAppSelector } from '@/lib/hooks'
 
-const stats = [
-  { title: 'Total Students', value: '1,248', icon: Users, change: '+12 this month', iconBg: 'bg-[#27598C]/10', iconColor: 'text-[#27598C]', trend: '+12%' },
-  { title: 'Total Teachers', value: '156', icon: BookOpen, change: '+3 this month', iconBg: 'bg-[#589C47]/10', iconColor: 'text-[#589C47]', trend: '+5%' },
-  { title: 'Fees Collected', value: '₹4.5L', icon: CreditCard, change: 'This quarter', iconBg: 'bg-[#0D2640]/10', iconColor: 'text-[#0D2640]', trend: '+8%' },
-  { title: 'Exam Pass Rate', value: '94%', icon: Award, change: 'Last board exam', iconBg: 'bg-[#E5D81A]/20', iconColor: 'text-yellow-600', trend: '+2%' },
-]
-
-const recentActivities = [
-  { label: 'New student enrolled', sub: 'Priya Sharma – Class IX', time: '10 min ago', icon: Users, color: 'bg-[#27598C]/10 text-[#27598C]' },
-  { label: 'Fee payment received', sub: '₹8,500 – Rahul Mehta', time: '45 min ago', icon: CreditCard, color: 'bg-[#589C47]/10 text-[#589C47]' },
-  { label: 'Attendance marked', sub: 'Class X-A – 42/44 present', time: '1 hr ago', icon: UserCheck, color: 'bg-[#0D2640]/10 text-[#0D2640]' },
-  { label: 'Exam result published', sub: 'Unit Test 3 – Mathematics', time: '2 hrs ago', icon: Award, color: 'bg-[#E5D81A]/20 text-yellow-600' },
-  { label: 'Teacher absent today', sub: 'Mr. James – Physics Dept.', time: '2 hrs ago', icon: AlertCircle, color: 'bg-red-50 text-red-500' },
-]
+// Activity mapping helper will be used inside component
 
 const quickActions = [
   { label: 'Add Student', href: '/admin/students', icon: Users, color: 'bg-[#27598C] text-white' },
@@ -37,6 +27,38 @@ const itemVariants = {
 }
 
 export default function AdminDashboard() {
+  const { token } = useAppSelector(state => state.auth);
+  const [data, setData] = useState<any>({
+    totalStudents: 0,
+    totalTeachers: 0,
+    revenueToday: 0,
+    pendingFeesTotal: 0,
+    pendingFeesCount: 0,
+    presentToday: 0,
+    totalPeriodsToday: 0,
+    examsThisWeek: 0,
+    recentActivities: []
+  });
+
+  useEffect(() => {
+    if (token) {
+      axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/dashboard/stats`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => {
+        if (res.data.success) {
+          setData(res.data.data);
+        }
+      }).catch(err => console.error(err));
+    }
+  }, [token]);
+
+  const stats = [
+    { title: 'Total Students', value: (data?.totalStudents || 0).toString(), icon: Users, change: 'Active enrolled', iconBg: 'bg-[#27598C]/10', iconColor: 'text-[#27598C]', trend: 'Live' },
+    { title: 'Total Teachers', value: (data?.totalTeachers || 0).toString(), icon: BookOpen, change: 'Active staff', iconBg: 'bg-[#589C47]/10', iconColor: 'text-[#589C47]', trend: 'Live' },
+    { title: 'Revenue Today', value: `₹${(data?.revenueToday || 0).toLocaleString()}`, icon: CreditCard, change: 'Collected today', iconBg: 'bg-[#0D2640]/10', iconColor: 'text-[#0D2640]', trend: 'Live' },
+    { title: 'Pending Fees', value: `₹${(data?.pendingFeesTotal || 0).toLocaleString()}`, icon: AlertCircle, change: `${data?.pendingFeesCount || 0} students due`, iconBg: 'bg-[#E5D81A]/20', iconColor: 'text-yellow-600', trend: 'Action' },
+  ];
+
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
 
@@ -109,8 +131,13 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent className="px-5 pb-5">
               <div className="space-y-3">
-                {recentActivities.map((item, i) => {
-                  const Icon = item.icon
+                {data.recentActivities && data.recentActivities.length > 0 ? data.recentActivities.map((item: any, i: number) => {
+                  let Icon = Users;
+                  let colorClass = 'bg-slate-100 text-slate-500';
+                  if (item.type === 'student') { Icon = Users; colorClass = 'bg-[#27598C]/10 text-[#27598C]'; }
+                  if (item.type === 'fee') { Icon = CreditCard; colorClass = 'bg-[#589C47]/10 text-[#589C47]'; }
+                  if (item.type === 'exam') { Icon = Award; colorClass = 'bg-[#E5D81A]/20 text-yellow-600'; }
+
                   return (
                     <motion.div
                       key={i}
@@ -119,7 +146,7 @@ export default function AdminDashboard() {
                       transition={{ delay: i * 0.07 }}
                       className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors"
                     >
-                      <div className={`w-9 h-9 rounded-xl ${item.color} flex items-center justify-center shrink-0`}>
+                      <div className={`w-9 h-9 rounded-xl ${colorClass} flex items-center justify-center shrink-0`}>
                         <Icon className="w-4 h-4" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -129,7 +156,9 @@ export default function AdminDashboard() {
                       <span className="text-xs text-slate-400 font-medium shrink-0 hidden sm:block">{item.time}</span>
                     </motion.div>
                   )
-                })}
+                }) : (
+                  <p className="text-sm text-slate-500 italic p-4 text-center">No recent activities found.</p>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -145,10 +174,10 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent className="px-5 pb-5 space-y-4">
               {[
-                { label: 'Present Today', value: '1,190', total: '1,248', color: 'bg-[#589C47]' },
-                { label: 'Fees Pending', value: '₹58K', sub: '24 students', color: 'bg-red-400' },
-                { label: 'Classes Today', value: '48', sub: '6 periods each', color: 'bg-[#27598C]' },
-                { label: 'Exams This Week', value: '3', sub: 'Unit tests', color: 'bg-[#E5D81A]' },
+                { label: 'Present Today', value: data.presentToday.toLocaleString(), total: data.totalStudents.toLocaleString(), color: 'bg-[#589C47]' },
+                { label: 'Fees Pending', value: `₹${(data.pendingFeesTotal / 1000).toFixed(1)}K`, sub: `${data.pendingFeesCount} students`, color: 'bg-red-400' },
+                { label: 'Classes Today', value: data.totalPeriodsToday.toString(), sub: 'Periods scheduled', color: 'bg-[#27598C]' },
+                { label: 'Exams Scheduled', value: data.examsThisWeek.toString(), sub: 'Active/Upcoming', color: 'bg-[#E5D81A]' },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <div className={`w-1.5 h-10 ${item.color} rounded-full shrink-0`}></div>
