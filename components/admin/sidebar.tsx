@@ -51,13 +51,13 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname()
   const dispatch = useAppDispatch()
   const router = useRouter()
-  const { user } = useAppSelector((state: any) => state.auth)
+  const { admin } = useAppSelector((state: any) => state.auth)
 
   const hasAccess = (permission: string) => {
-    if (!user) return false;
-    if (user.role === 'SUPER_ADMIN') return true;
+    if (!admin) return false;
+    if (admin.role === 'SUPER_ADMIN') return true;
     if (permission === 'dashboard') return true; // Everyone can see dashboard/notifications
-    return user.permissions && Array.isArray(user.permissions) && user.permissions.includes(permission);
+    return admin.permissions && Array.isArray(admin.permissions) && admin.permissions.includes(permission);
   };
 
   const handleLinkClick = () => {

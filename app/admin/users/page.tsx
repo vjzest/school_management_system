@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation'
 const ALL_PERMISSIONS = ['dashboard', 'students', 'teachers', 'attendance', 'fees', 'admissions', 'exams', 'results', 'timetable', 'settings']
 
 export default function AdminStaffPage() {
-  const { token, user } = useAppSelector((state: any) => state.auth)
+  const { token, admin } = useAppSelector((state: any) => state.auth)
   const router = useRouter()
   const [admins, setAdmins] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -29,13 +29,13 @@ export default function AdminStaffPage() {
   })
 
   useEffect(() => {
-    if (user?.role !== 'SUPER_ADMIN') {
+    if (admin?.role !== 'SUPER_ADMIN') {
       toast.error('You do not have access to this module')
       router.push('/admin/dashboard')
     } else if (token) {
       fetchAdmins()
     }
-  }, [token, user])
+  }, [token, admin])
 
   const fetchAdmins = async () => {
     try {
