@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
-import { useAppDispatch } from '@/lib/hooks'
+import { useAppDispatch, useAppSelector } from '@/lib/hooks'
 import { logout } from '@/lib/features/authSlice'
 import {
   LayoutDashboard,
@@ -29,26 +29,35 @@ interface SidebarProps {
 }
 
 const menuItems = [
-  { label: 'Dashboard', icon: LayoutDashboard, href: '/admin' },
-  { label: 'Students', icon: Users, href: '/admin/students' },
-  { label: 'Teachers', icon: BookOpen, href: '/admin/teachers' },
-  { label: 'Attendance', icon: Clock, href: '/admin/attendance' },
-  { label: 'Fees', icon: CreditCard, href: '/admin/fees' },
-  { label: 'Admissions', icon: BookOpen, href: '/admin/admissions' },
-  { label: 'Exams', icon: Award, href: '/admin/exams' },
-  { label: 'Results', icon: BookMarked, href: '/admin/results' },
-  { label: 'Timetable', icon: Clock, href: '/admin/timetable' },
+  { label: 'Dashboard', icon: LayoutDashboard, href: '/admin', permission: 'dashboard' },
+  { label: 'Students', icon: Users, href: '/admin/students', permission: 'students' },
+  { label: 'Teachers', icon: BookOpen, href: '/admin/teachers', permission: 'teachers' },
+  { label: 'Attendance', icon: Clock, href: '/admin/attendance', permission: 'attendance' },
+  { label: 'Fees', icon: CreditCard, href: '/admin/fees', permission: 'fees' },
+  { label: 'Admissions', icon: BookOpen, href: '/admin/admissions', permission: 'admissions' },
+  { label: 'Exams', icon: Award, href: '/admin/exams', permission: 'exams' },
+  { label: 'Results', icon: BookMarked, href: '/admin/results', permission: 'results' },
+  { label: 'Timetable', icon: Clock, href: '/admin/timetable', permission: 'timetable' },
 ]
 
 const bottomItems = [
-  { label: 'Notifications', icon: Bell, href: '/admin/notifications' },
-  { label: 'Settings', icon: Settings, href: '/admin/settings' },
+  { label: 'Admin Staff', icon: Shield, href: '/admin/users', permission: 'admins_manage' },
+  { label: 'Notifications', icon: Bell, href: '/admin/notifications', permission: 'dashboard' },
+  { label: 'Settings', icon: Settings, href: '/admin/settings', permission: 'settings' },
 ]
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname()
   const dispatch = useAppDispatch()
   const router = useRouter()
+  const { user } = useAppSelector((state: any) => state.auth)
+
+  const hasAccess = (permission: string) => {
+    if (!user) return false;
+    if (user.role === 'SUPER_ADMIN') return true;
+    if (permission === 'dashboard') return true; // Everyone can see dashboard/notifications
+    return user.permissions && Array.isArray(user.permissions) && user.permissions.includes(permission);
+  };
 
   const handleLinkClick = () => {
     if (window.innerWidth < 1024 && onClose) {
@@ -98,7 +107,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto p-3 space-y-1">
-          {menuItems.map((item) => {
+          {menuItems.filter(item => hasAccess(item.permission)).map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href + '/'))
 
@@ -127,7 +136,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         {/* Bottom Items */}
         <div className="border-t border-white/10 p-3 space-y-1">
-          {bottomItems.map((item) => {
+          {bottomItems.filter(item => hasAccess(item.permission)).map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href
             return (
