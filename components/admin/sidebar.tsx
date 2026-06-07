@@ -19,7 +19,8 @@ import {
   Bell,
   Settings,
   LogOut,
-  X
+  X,
+  Shield
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
