@@ -179,22 +179,12 @@ export default function StudentsPage() {
                       onChange={e => setFormData({...formData, studentClass: e.target.value, section: '', course: ''})}
                     >
                       <option value="">Select Class</option>
-                      {['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].map(cls => (
-                        <option key={cls} value={cls}>Class {cls}</option>
+                      {['Nursery', 'LKG', 'UKG', '1', '2', '3', '4', '5', '6', '7', '8'].map(cls => (
+                        <option key={cls} value={cls}>{['Nursery', 'LKG', 'UKG'].includes(cls) ? cls : `Class ${cls}`}</option>
                       ))}
                     </select>
 
-                    {(formData.studentClass === '11' || formData.studentClass === '12') && (
-                      <select 
-                        required 
-                        className="border border-slate-200 p-2.5 rounded-xl bg-white text-slate-600" 
-                        value={formData.course} 
-                        onChange={e => setFormData({...formData, course: e.target.value})}
-                      >
-                        <option value="">Select Stream</option>
-                        {['PCM', 'PCB', 'Commerce', 'Arts'].map(str => <option key={str} value={str}>{str}</option>)}
-                      </select>
-                    )}
+
 
                     <select 
                       required 

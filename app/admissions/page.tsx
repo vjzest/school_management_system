@@ -219,11 +219,17 @@ export default function AdmissionsPage() {
                 <label className="font-bold text-[#0D2640] text-sm">Class Applying For</label>
                 <select name="classApplied" value={formData.classApplied} onChange={handleChange} className="w-full bg-[#F4F7FB] border border-slate-200 rounded-xl px-5 py-4 focus:outline-none focus:border-[#27598C] focus:ring-1 focus:ring-[#27598C] transition-all text-slate-500 text-sm appearance-none">
                   <option value="">Select class...</option>
-                  <option value="Nursery / KG">Nursery / KG</option>
-                  <option value="Class I – V (Primary)">Class I – V (Primary)</option>
-                  <option value="Class VI – VIII (Middle)">Class VI – VIII (Middle)</option>
-                  <option value="Class IX – X (Secondary)">Class IX – X (Secondary)</option>
-                  <option value="Class XI – XII (Senior Secondary)">Class XI – XII (Senior Secondary)</option>
+                  <option value="Nursery">Nursery</option>
+                  <option value="LKG">LKG</option>
+                  <option value="UKG">UKG</option>
+                  <option value="1">Class 1</option>
+                  <option value="2">Class 2</option>
+                  <option value="3">Class 3</option>
+                  <option value="4">Class 4</option>
+                  <option value="5">Class 5</option>
+                  <option value="6">Class 6</option>
+                  <option value="7">Class 7</option>
+                  <option value="8">Class 8</option>
                 </select>
               </div>
               <div className="border-2 border-dashed border-slate-200 hover:border-[#27598C] bg-[#F4F7FB] rounded-[20px] p-7 text-center transition-colors cursor-pointer group mt-4">

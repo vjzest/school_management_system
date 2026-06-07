@@ -249,7 +249,7 @@ export default function AttendancePage() {
                 }}
               >
                 <option value="">Select Class</option>
-                {uniqueClasses.map(c => <option key={c as string} value={c as string}>Class {c as string}</option>)}
+                {uniqueClasses.map(c => <option key={c as string} value={c as string}>{['Nursery', 'LKG', 'UKG'].includes(c as string) ? c : `Class ${c}`}</option>)}
               </select>
             </div>
             

@@ -239,7 +239,7 @@ export default function ExamsPage() {
                     <label className="text-xs font-bold text-slate-500 mb-1">Class</label>
                     <select required className="border border-slate-200 p-2.5 rounded-xl bg-white" value={formData.studentClass} onChange={e => setFormData({...formData, studentClass: e.target.value, course: ''})}>
                       <option value="">Select Class</option>
-                      {['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].map(cls => <option key={cls} value={cls}>Class {cls}</option>)}
+                      {['Nursery', 'LKG', 'UKG', '1', '2', '3', '4', '5', '6', '7', '8'].map(cls => <option key={cls} value={cls}>{['Nursery', 'LKG', 'UKG'].includes(cls) ? cls : `Class ${cls}`}</option>)}
                     </select>
                   </div>
 

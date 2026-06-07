@@ -163,8 +163,8 @@ export default function TimetablePage() {
                 onChange={(e) => setSelectedClass(e.target.value)}
               >
                 <option value="">-- Select --</option>
-                {['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].map(c => (
-                  <option key={c} value={c}>Class {c}</option>
+                {['Nursery', 'LKG', 'UKG', '1', '2', '3', '4', '5', '6', '7', '8'].map(c => (
+                  <option key={c} value={c}>{['Nursery', 'LKG', 'UKG'].includes(c) ? c : `Class ${c}`}</option>
                 ))}
               </select>
             </div>
