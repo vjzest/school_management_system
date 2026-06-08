@@ -55,7 +55,7 @@ export default function TeachersPage() {
     e.preventDefault();
     try {
       const url = editId 
-        ? `http://localhost:5001/api/admin/teachers/${editId}`
+        ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/teachers/${editId}`
         : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/teachers`;
       
       const method = editId ? 'put' : 'post';
@@ -108,7 +108,7 @@ export default function TeachersPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await axios.delete(`http://localhost:5001/api/admin/teachers/${id}`, {
+      const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/teachers/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {

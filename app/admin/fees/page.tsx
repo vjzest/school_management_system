@@ -52,7 +52,7 @@ export default function FeesPage() {
   const fetchFees = () => {
     if (token && feeCycle) {
       const queryParam = feeCycle === 'Overall' ? '' : feeCycle;
-      axios.get(`http://localhost:5001/api/admin/fees?feeCycle=${queryParam}`, {
+      axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/fees?feeCycle=${queryParam}`, {
         headers: { Authorization: `Bearer ${token}` }
       }).then(res => {
         if (res.data.success) {
@@ -138,7 +138,7 @@ export default function FeesPage() {
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const res = await axios.put(`http://localhost:5001/api/admin/fees/${selectedRecord._id}`, {
+      const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/fees/${selectedRecord._id}`, {
         amountPaid: Number(updateForm.amountPaid),
         lateFine: Number(updateForm.lateFine),
         discount: Number(updateForm.discount),

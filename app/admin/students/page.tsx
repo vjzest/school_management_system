@@ -69,7 +69,7 @@ export default function StudentsPage() {
 
       let res;
       if (editId) {
-        res = await axios.put(`http://localhost:5001/api/admin/students/${editId}`, payload, {
+        res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/students/${editId}`, payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
       } else {
@@ -121,7 +121,7 @@ export default function StudentsPage() {
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this student?")) return;
     try {
-      const res = await axios.delete(`http://localhost:5001/api/admin/students/${id}`, {
+      const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/students/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {

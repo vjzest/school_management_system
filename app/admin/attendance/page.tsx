@@ -42,7 +42,7 @@ export default function AttendancePage() {
   // Fetch Attendance for the selected date
   useEffect(() => {
     if (token && selectedDate) {
-      axios.get(`http://localhost:5001/api/admin/attendance?date=${selectedDate}&type=Student`, {
+      axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/attendance?date=${selectedDate}&type=Student`, {
         headers: { Authorization: `Bearer ${token}` }
       }).then(res => {
         if (res.data.success) {

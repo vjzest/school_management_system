@@ -78,7 +78,7 @@ export default function ResultsPage() {
     }
 
     try {
-      const res = await axios.put(`http://localhost:5001/api/admin/exams/${selectedExamId}`, {
+      const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/exams/${selectedExamId}`, {
         sectionResults: updatedSectionResults
       }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -106,7 +106,7 @@ export default function ResultsPage() {
     updatedSectionResults = updatedSectionResults.filter(sr => sr.section !== sectionToDelete)
 
     try {
-      const res = await axios.put(`http://localhost:5001/api/admin/exams/${selectedExamId}`, {
+      const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/exams/${selectedExamId}`, {
         sectionResults: updatedSectionResults
       }, {
         headers: { Authorization: `Bearer ${token}` }

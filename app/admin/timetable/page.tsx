@@ -60,7 +60,7 @@ export default function TimetablePage() {
     if (!token || !selectedClass || !selectedSection) return
     
     try {
-      const res = await axios.get(`http://localhost:5001/api/admin/timetable?studentClass=${selectedClass}&section=${selectedSection}`, {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/timetable?studentClass=${selectedClass}&section=${selectedSection}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
 

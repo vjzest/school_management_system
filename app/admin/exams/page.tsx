@@ -55,7 +55,7 @@ export default function ExamsPage() {
     try {
       let res
       if (editId) {
-        res = await axios.put(`http://localhost:5001/api/admin/exams/${editId}`, formData, {
+        res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/exams/${editId}`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         })
       } else {
@@ -77,7 +77,7 @@ export default function ExamsPage() {
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this exam?")) return
     try {
-      const res = await axios.delete(`http://localhost:5001/api/admin/exams/${id}`, {
+      const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/exams/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       if (res.data.success) {
