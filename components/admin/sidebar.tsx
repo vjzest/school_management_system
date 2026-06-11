@@ -39,6 +39,7 @@ const menuItems = [
   { label: 'Exams', icon: Award, href: '/admin/exams', permission: 'exams' },
   { label: 'Results', icon: BookMarked, href: '/admin/results', permission: 'results' },
   { label: 'Timetable', icon: Clock, href: '/admin/timetable', permission: 'timetable' },
+  { label: 'Gallery', icon: BookOpen, href: '/admin/gallery', permission: 'dashboard' },
 ]
 
 const bottomItems = [

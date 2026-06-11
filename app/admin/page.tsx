@@ -60,7 +60,6 @@ export default function AdminDashboard() {
     { title: 'Revenue Today', value: `₹${(data?.revenueToday || 0).toLocaleString()}`, icon: CreditCard, change: 'Collected today', iconBg: 'bg-[#0D2640]/10', iconColor: 'text-[#0D2640]', trend: 'Live', link: '/admin/fees' },
     { title: 'Pending Fees', value: `₹${(data?.pendingFeesTotal || 0).toLocaleString()}`, icon: AlertCircle, change: `${data?.pendingFeesCount || 0} students due`, iconBg: 'bg-[#E5D81A]/20', iconColor: 'text-yellow-600', trend: 'Action', link: '/admin/fees' },
   ];
-
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
 
@@ -79,7 +78,6 @@ export default function AdminDashboard() {
           </Link>
         </div>
       </div>
-
       {/* Stat Cards */}
       <motion.div
         variants={containerVariants}
@@ -110,7 +108,6 @@ export default function AdminDashboard() {
           )
         })}
       </motion.div>
-
       {/* Quick Actions */}
       <div className="grid grid-cols-4 gap-3">
         {quickActions.map((action, idx) => {
@@ -125,7 +122,6 @@ export default function AdminDashboard() {
           )
         })}
       </div>
-
       {/* Activity + Mini Stats */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
 
