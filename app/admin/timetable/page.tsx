@@ -10,12 +10,12 @@ import { Input } from '@/components/ui/input'
 import { Edit2, Save, Calendar, Clock } from 'lucide-react'
 import { toast } from 'sonner'
 
-const timeSlots = [
-  { start: '9:00 AM', end: '10:00 AM', label: '9:00 AM' },
-  { start: '10:00 AM', end: '11:00 AM', label: '10:00 AM' },
-  { start: '11:00 AM', end: '12:00 PM', label: '11:00 AM' },
-  { start: '12:00 PM', end: '1:00 PM', label: '12:00 PM' },
-  { start: '1:00 PM', end: '2:00 PM', label: '1:00 PM' }
+const defaultTimeSlots = [
+  { start: '9:00 AM', end: '10:00 AM' },
+  { start: '10:00 AM', end: '11:00 AM' },
+  { start: '11:00 AM', end: '12:00 PM' },
+  { start: '12:00 PM', end: '12:30 PM' },
+  { start: '12:30 PM', end: '1:30 PM' }
 ]
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -41,13 +41,15 @@ export default function TimetablePage() {
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
 
+  const [timeSlots, setTimeSlots] = useState<{start: string, end: string}[]>(defaultTimeSlots)
+
   // State shape: timetableData['Monday'][0] = 'Math'
   const [timetableData, setTimetableData] = useState<Record<string, string[]>>({})
 
-  const initializeEmptyTimetable = () => {
+  const initializeEmptyTimetable = (slots = timeSlots) => {
     const empty: Record<string, string[]> = {}
     days.forEach(day => {
-      empty[day] = Array(timeSlots.length).fill('Free')
+      empty[day] = Array(slots.length).fill('Free')
     })
     setTimetableData(empty)
   }
@@ -67,21 +69,30 @@ export default function TimetablePage() {
       if (res.data.success) {
         const fetched = res.data.data // Array of day objects
         if (fetched.length > 0) {
+          // Extract columns from the first day that has periods
+          let slotsToUse = [...defaultTimeSlots]
+          const dayWithPeriods = fetched.find((d: any) => d.periods && d.periods.length > 0)
+          if (dayWithPeriods) {
+            slotsToUse = dayWithPeriods.periods.map((p: any) => ({ start: p.startTime, end: p.endTime }))
+            setTimeSlots(slotsToUse)
+          }
+
           const newData: Record<string, string[]> = {}
           days.forEach(day => {
             const dayRecord = fetched.find((d: any) => d.dayOfWeek === day)
             if (dayRecord && dayRecord.periods && dayRecord.periods.length > 0) {
-              newData[day] = timeSlots.map((ts) => {
+              newData[day] = slotsToUse.map((ts) => {
                 const period = dayRecord.periods.find((p: any) => p.startTime === ts.start)
                 return period ? period.subject : 'Free'
               })
             } else {
-              newData[day] = Array(timeSlots.length).fill('Free')
+              newData[day] = Array(slotsToUse.length).fill('Free')
             }
           })
           setTimetableData(newData)
         } else {
-          initializeEmptyTimetable()
+          setTimeSlots(defaultTimeSlots)
+          initializeEmptyTimetable(defaultTimeSlots)
         }
       }
     } catch (err) {
@@ -95,7 +106,8 @@ export default function TimetablePage() {
     if (selectedClass && selectedSection) {
       fetchTimetable()
     } else {
-      initializeEmptyTimetable()
+      setTimeSlots(defaultTimeSlots)
+      initializeEmptyTimetable(defaultTimeSlots)
     }
   }, [selectedClass, selectedSection, token])
 
@@ -104,6 +116,23 @@ export default function TimetablePage() {
       const newDayData = [...prev[day]]
       newDayData[slotIndex] = subject || 'Free'
       return { ...prev, [day]: newDayData }
+    })
+  }
+
+  const handleTimeSlotChange = (index: number, field: 'start'|'end', value: string) => {
+    setTimeSlots(prev => {
+      const newSlots = [...prev]
+      newSlots[index] = { ...newSlots[index], [field]: value }
+      return newSlots
+    })
+  }
+
+  const addColumn = () => {
+    setTimeSlots(prev => [...prev, { start: 'New', end: 'Time' }])
+    setTimetableData(prev => {
+      const newData = { ...prev }
+      days.forEach(day => newData[day] = [...(newData[day] || []), 'Free'])
+      return newData
     })
   }
 
@@ -210,6 +239,12 @@ export default function TimetablePage() {
                   <Save className="w-4 h-4 mr-2" />
                   {isSaving ? 'Saving...' : 'Save Schedule'}
                 </Button>
+                <Button 
+                  onClick={addColumn}
+                  className="bg-[#589C47] hover:bg-[#48823b] text-white rounded-xl px-4 shadow-md"
+                >
+                  + Add Column
+                </Button>
               </>
             )}
           </div>
@@ -231,12 +266,29 @@ export default function TimetablePage() {
                       <Calendar className="w-4 h-4 text-[#27598C]" /> Day / Time
                     </div>
                   </th>
-                  {timeSlots.map((slot) => (
-                    <th key={slot.start} className="px-4 py-4 text-center font-bold text-slate-500 border-r border-slate-100 last:border-0">
-                      <div className="flex flex-col items-center justify-center gap-1">
-                        <Clock className="w-3.5 h-3.5 text-slate-300" />
-                        {slot.start} <span className="text-[10px] font-normal text-slate-400">to {slot.end}</span>
-                      </div>
+                  {timeSlots.map((slot, index) => (
+                    <th key={index} className="px-4 py-4 text-center font-bold text-slate-500 border-r border-slate-100 last:border-0 min-w-[120px]">
+                      {isEditing ? (
+                        <div className="flex flex-col gap-1 items-center">
+                          <input 
+                            value={slot.start}
+                            onChange={e => handleTimeSlotChange(index, 'start', e.target.value)}
+                            className="w-full text-center text-xs border border-slate-200 rounded p-1"
+                            placeholder="Start"
+                          />
+                          <input 
+                            value={slot.end}
+                            onChange={e => handleTimeSlotChange(index, 'end', e.target.value)}
+                            className="w-full text-center text-xs border border-slate-200 rounded p-1"
+                            placeholder="End"
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center gap-1">
+                          <Clock className="w-3.5 h-3.5 text-slate-300" />
+                          {slot.start} <span className="text-[10px] font-normal text-slate-400">to {slot.end}</span>
+                        </div>
+                      )}
                     </th>
                   ))}
                 </tr>
@@ -248,13 +300,13 @@ export default function TimetablePage() {
                       {day}
                     </td>
                     {timetableData[day]?.map((subject: string, slotIndex: number) => (
-                      <td key={slotIndex} className="px-4 py-4 border-r border-slate-100 last:border-0 text-center">
+                      <td key={slotIndex} className="px-4 py-4 border-r border-slate-100 last:border-0 text-center min-w-[120px]">
                         {isEditing ? (
                           <Input
                             value={subject === 'Free' ? '' : subject}
                             onChange={(e) => handleSubjectChange(day, slotIndex, e.target.value)}
                             placeholder="Free"
-                            className="text-center font-medium h-9 bg-white border-slate-200 focus:border-blue-400 focus:ring-blue-400/20"
+                            className="text-center font-medium h-9 text-xs min-w-[100px] w-full bg-white border-slate-200 focus:border-blue-400 focus:ring-blue-400/20"
                           />
                         ) : (
                           <motion.div

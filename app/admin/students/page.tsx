@@ -233,7 +233,7 @@ export default function StudentsPage() {
                     <input required placeholder="Father's Name" pattern="^[A-Za-z\s]+$" className="border border-slate-200 p-2.5 rounded-xl bg-white" value={formData.fatherName} onChange={e => setFormData({...formData, fatherName: e.target.value})} />
                     <input required placeholder="Mother's Name" pattern="^[A-Za-z\s]+$" className="border border-slate-200 p-2.5 rounded-xl bg-white" value={formData.motherName} onChange={e => setFormData({...formData, motherName: e.target.value})} />
                     <input required placeholder="Parent Phone (10 digits)" pattern="^[0-9]{10}$" maxLength={10} title="Must be exactly 10 digits" className="border border-slate-200 p-2.5 rounded-xl bg-white" value={formData.parentPhone} onChange={e => setFormData({...formData, parentPhone: e.target.value})} />
-                    <input required placeholder="Student Phone (10 digits)" pattern="^[0-9]{10}$" maxLength={10} title="Must be exactly 10 digits" className="border border-slate-200 p-2.5 rounded-xl bg-white" value={formData.contact} onChange={e => setFormData({...formData, contact: e.target.value})} />
+                    <input placeholder="Alternate Number (Optional)" pattern="^[0-9]{10}$" maxLength={10} title="Must be exactly 10 digits" className="border border-slate-200 p-2.5 rounded-xl bg-white" value={formData.contact} onChange={e => setFormData({...formData, contact: e.target.value})} />
                     <textarea required placeholder="Full Address" className="border border-slate-200 p-2.5 rounded-xl bg-white col-span-2 resize-none" rows={2} value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} />
                   </div>
                 </div>

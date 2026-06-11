@@ -47,6 +47,20 @@ export default function AdminAdmissionsPage() {
     }
   }
 
+  const handleEnroll = async (id: string) => {
+    try {
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admissions/${id}/enroll`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      if (res.data.success) {
+        toast.success('Student Enrolled successfully')
+        fetchApplications()
+      }
+    } catch (err) {
+      toast.error('Failed to enroll student')
+    }
+  }
+
   if (isLoading) return <div className="p-8 font-bold">Loading applications...</div>
 
   return (
@@ -92,7 +106,7 @@ export default function AdminAdmissionsPage() {
                   <td className="px-6 py-4 text-right">
                     {app.status === 'Pending' && (
                       <div className="flex items-center justify-end gap-2">
-                        <Button onClick={() => handleStatusChange(app._id, 'Approved')} size="sm" className="bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200">Approve</Button>
+                        <Button onClick={() => handleEnroll(app._id)} size="sm" className="bg-[#27598C] text-white hover:bg-[#1f4770] border border-[#27598C]">Approve & Enroll</Button>
                         <Button onClick={() => handleStatusChange(app._id, 'Rejected')} size="sm" className="bg-red-50 text-red-600 hover:bg-red-100 border border-red-200">Reject</Button>
                       </div>
                     )}

@@ -37,7 +37,9 @@ export default function AdminDashboard() {
     presentToday: 0,
     totalPeriodsToday: 0,
     examsThisWeek: 0,
-    recentActivities: []
+    recentActivities: [],
+    schoolName: 'Royal Public School',
+    academicYear: '2025-2026'
   });
 
   useEffect(() => {
@@ -53,10 +55,10 @@ export default function AdminDashboard() {
   }, [token]);
 
   const stats = [
-    { title: 'Total Students', value: (data?.totalStudents || 0).toString(), icon: Users, change: 'Active enrolled', iconBg: 'bg-[#27598C]/10', iconColor: 'text-[#27598C]', trend: 'Live' },
-    { title: 'Total Teachers', value: (data?.totalTeachers || 0).toString(), icon: BookOpen, change: 'Active staff', iconBg: 'bg-[#589C47]/10', iconColor: 'text-[#589C47]', trend: 'Live' },
-    { title: 'Revenue Today', value: `₹${(data?.revenueToday || 0).toLocaleString()}`, icon: CreditCard, change: 'Collected today', iconBg: 'bg-[#0D2640]/10', iconColor: 'text-[#0D2640]', trend: 'Live' },
-    { title: 'Pending Fees', value: `₹${(data?.pendingFeesTotal || 0).toLocaleString()}`, icon: AlertCircle, change: `${data?.pendingFeesCount || 0} students due`, iconBg: 'bg-[#E5D81A]/20', iconColor: 'text-yellow-600', trend: 'Action' },
+    { title: 'Total Students', value: (data?.totalStudents || 0).toString(), icon: Users, change: 'Active enrolled', iconBg: 'bg-[#27598C]/10', iconColor: 'text-[#27598C]', trend: 'Live', link: '/admin/students' },
+    { title: 'Total Teachers', value: (data?.totalTeachers || 0).toString(), icon: BookOpen, change: 'Active staff', iconBg: 'bg-[#589C47]/10', iconColor: 'text-[#589C47]', trend: 'Live', link: '/admin/teachers' },
+    { title: 'Revenue Today', value: `₹${(data?.revenueToday || 0).toLocaleString()}`, icon: CreditCard, change: 'Collected today', iconBg: 'bg-[#0D2640]/10', iconColor: 'text-[#0D2640]', trend: 'Live', link: '/admin/fees' },
+    { title: 'Pending Fees', value: `₹${(data?.pendingFeesTotal || 0).toLocaleString()}`, icon: AlertCircle, change: `${data?.pendingFeesCount || 0} students due`, iconBg: 'bg-[#E5D81A]/20', iconColor: 'text-yellow-600', trend: 'Action', link: '/admin/fees' },
   ];
 
   return (
@@ -66,10 +68,15 @@ export default function AdminDashboard() {
       <div className="bg-gradient-to-r from-[#0D2640] to-[#27598C] rounded-[24px] p-6 sm:p-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-56 h-56 bg-[#E5D81A]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-40 h-40 bg-[#589C47]/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none"></div>
-        <div className="relative z-10">
-          <p className="text-[#E5D81A] font-bold text-xs uppercase tracking-widest mb-1">Admin Panel</p>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-1">Good Morning, Principal!</h2>
-          <p className="text-slate-300 text-sm">Royal Public School &nbsp;•&nbsp; Academic Year 2025–26</p>
+        <div className="relative z-10 flex justify-between items-start">
+          <div>
+            <p className="text-[#E5D81A] font-bold text-xs uppercase tracking-widest mb-1">Admin Panel</p>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-1">Good Morning, Principal!</h2>
+            <p className="text-slate-300 text-sm">{data.schoolName} &nbsp;•&nbsp; Academic Year {data.academicYear}</p>
+          </div>
+          <Link href="/admin/settings" className="text-white/80 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+            Edit
+          </Link>
         </div>
       </div>
 
@@ -84,19 +91,21 @@ export default function AdminDashboard() {
           const Icon = stat.icon
           return (
             <motion.div key={index} variants={itemVariants}>
-              <Card className="border-0 bg-white shadow-sm rounded-2xl hover:shadow-md transition-all duration-300">
-                <CardContent className="p-4 sm:p-5">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className={`w-10 h-10 sm:w-11 sm:h-11 ${stat.iconBg} rounded-xl flex items-center justify-center`}>
-                      <Icon className={`w-5 h-5 ${stat.iconColor}`} />
+              <Link href={stat.link}>
+                <Card className="border-0 bg-white shadow-sm rounded-2xl hover:shadow-md transition-all duration-300 cursor-pointer hover:-translate-y-1">
+                  <CardContent className="p-4 sm:p-5">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className={`w-10 h-10 sm:w-11 sm:h-11 ${stat.iconBg} rounded-xl flex items-center justify-center`}>
+                        <Icon className={`w-5 h-5 ${stat.iconColor}`} />
+                      </div>
+                      <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[#589C47]/10 text-[#589C47]">{stat.trend}</span>
                     </div>
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[#589C47]/10 text-[#589C47]">{stat.trend}</span>
-                  </div>
-                  <p className="text-xs text-slate-500 font-medium mb-0.5">{stat.title}</p>
-                  <p className="text-xl sm:text-2xl font-extrabold text-[#0D2640]">{stat.value}</p>
-                  <p className="text-xs text-slate-400 mt-1">{stat.change}</p>
-                </CardContent>
-              </Card>
+                    <p className="text-xs text-slate-500 font-medium mb-0.5">{stat.title}</p>
+                    <p className="text-xl sm:text-2xl font-extrabold text-[#0D2640]">{stat.value}</p>
+                    <p className="text-xs text-slate-400 mt-1">{stat.change}</p>
+                  </CardContent>
+                </Card>
+              </Link>
             </motion.div>
           )
         })}
