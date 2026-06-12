@@ -13,6 +13,7 @@ const navLinks = [
   { label: 'Academics', href: '/academics' },
   { label: 'Admissions', href: '/admissions' },
   { label: 'Facilities', href: '/facilities' },
+  { label: 'Gallery', href: '/gallery' },
 ]
 
 export default function Navbar() {

@@ -168,7 +168,6 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
         </div>
-
         {/* Today's Snapshot */}
         <div>
           <Card className="border-0 bg-white shadow-sm rounded-2xl h-full">
