@@ -19,10 +19,11 @@ export default function GalleryPage() {
   
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [newImage, setNewImage] = useState({ title: '', description: '', date: new Date().toISOString().split('T')[0] })
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+  const [uploadProgress, setUploadProgress] = useState<string>('')
   
   const fileInputRef = useRef<HTMLInputElement>(null)
-
+ 
   const fetchGallery = async () => {
     try {
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/gallery`, {
@@ -56,45 +57,58 @@ export default function GalleryPage() {
   }
 
   const handleUploadAndSave = async () => {
-    if (!selectedFile) return toast.error('Please select an image')
+    if (selectedFiles.length === 0) return toast.error('Please select at least one image')
     if (!newImage.title) return toast.error('Please enter a title')
     
     setIsUploading(true)
+    let successCount = 0
     try {
-      // 1. Upload to Cloudinary
-      const formData = new FormData()
-      formData.append('file', selectedFile)
-      
-      const uploadRes = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/upload/image`, formData, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i]
+        setUploadProgress(`Uploading ${i + 1} of ${selectedFiles.length}...`)
+        
+        // 1. Upload to Cloudinary
+        const formData = new FormData()
+        formData.append('file', file)
+        
+        const uploadRes = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/upload/image`, formData, {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        
+        if (!uploadRes.data.success) throw new Error('Upload failed')
+        
+        const imageUrl = uploadRes.data.url
+        
+        // 2. Save to Gallery
+        const imageTitle = selectedFiles.length > 1 ? `${newImage.title} (${i + 1})` : newImage.title
+        
+        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/gallery`, {
+          imageUrl,
+          title: imageTitle,
+          description: newImage.description,
+          date: newImage.date
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        
+        if (res.data.success) {
+          successCount++
         }
-      })
-      
-      if (!uploadRes.data.success) throw new Error('Upload failed')
-      
-      const imageUrl = uploadRes.data.url
-      
-      // 2. Save to Gallery
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/gallery`, {
-        imageUrl,
-        ...newImage
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      
-      if (res.data.success) {
-        toast.success('Image added to gallery')
-        setIsAddOpen(false)
-        setNewImage({ title: '', description: '', date: new Date().toISOString().split('T')[0] })
-        setSelectedFile(null)
-        fetchGallery()
       }
+      
+      toast.success(`${successCount} images added to gallery successfully!`)
+      setIsAddOpen(false)
+      setNewImage({ title: '', description: '', date: new Date().toISOString().split('T')[0] })
+      setSelectedFiles([])
+      fetchGallery()
     } catch (err) {
       toast.error('Failed to upload image')
     } finally {
       setIsUploading(false)
+      setUploadProgress('')
     }
   }
 
@@ -122,14 +136,18 @@ export default function GalleryPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs font-bold text-slate-500 mb-1 block">Image File *</label>
+                  <label className="text-xs font-bold text-slate-500 mb-1 block">Image Files * (Multiple Allowed)</label>
                   <input 
                     type="file" 
                     accept="image/*"
-                    onChange={e => setSelectedFile(e.target.files?.[0] || null)}
+                    multiple
+                    onChange={e => setSelectedFiles(e.target.files ? Array.from(e.target.files) : [])}
                     ref={fileInputRef}
                     className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[#27598C]/10 file:text-[#27598C] hover:file:bg-[#27598C]/20 border border-slate-200 rounded-xl p-1"
                   />
+                  {selectedFiles.length > 0 && (
+                    <p className="text-xs text-slate-500 mt-1 font-bold">{selectedFiles.length} file(s) selected</p>
+                  )}
                 </div>
                 <div>
                   <label className="text-xs font-bold text-slate-500 mb-1 block">Title *</label>
@@ -149,7 +167,7 @@ export default function GalleryPage() {
             </div>
             <div className="mt-6 flex justify-end">
               <Button onClick={handleUploadAndSave} disabled={isUploading} className="bg-[#589C47] hover:bg-[#4a853b] text-white">
-                {isUploading ? 'Uploading...' : <><Upload className="w-4 h-4 mr-2" /> Upload to Gallery</>}
+                {isUploading ? uploadProgress || 'Uploading...' : <><Upload className="w-4 h-4 mr-2" /> Upload to Gallery</>}
               </Button>
             </div>
           </CardContent>

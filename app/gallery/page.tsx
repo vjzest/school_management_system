@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Image from 'next/image'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Image as ImageIcon } from 'lucide-react'
 import Navbar from '@/components/landing/navbar'
@@ -52,22 +53,25 @@ export default function PublicGalleryPage() {
           ) : images.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {images.map((img: any, i) => (
-                <motion.div 
-                  key={img._id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="group relative bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100"
-                >
-                  <div className="aspect-[4/3] w-full relative bg-slate-100">
-                    <Image src={img.imageUrl} alt={img.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                  </div>
-                  <div className="p-5">
-                    <h3 className="font-bold text-[#0D2640] text-lg mb-1">{img.title}</h3>
-                    {img.description && <p className="text-sm text-slate-500 line-clamp-2">{img.description}</p>}
-                    <p className="text-xs text-slate-400 font-medium mt-3">{new Date(img.date).toLocaleDateString()}</p>
-                  </div>
-                </motion.div>
+                <Link href={`/gallery/${img._id}`} key={img._id}>
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="group relative bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 cursor-pointer h-full flex flex-col"
+                  >
+                    <div className="aspect-[4/3] w-full relative bg-slate-100 overflow-hidden">
+                      <Image src={img.imageUrl} alt={img.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    </div>
+                    <div className="p-5 flex-1 flex flex-col justify-between">
+                      <div>
+                        <h3 className="font-bold text-[#0D2640] text-lg mb-1 group-hover:text-[#27598C] transition-colors">{img.title}</h3>
+                        {img.description && <p className="text-sm text-slate-500 line-clamp-2">{img.description}</p>}
+                      </div>
+                      <p className="text-xs text-slate-400 font-medium mt-3">{new Date(img.date).toLocaleDateString()}</p>
+                    </div>
+                  </motion.div>
+                </Link>
               ))}
             </div>
           ) : (
