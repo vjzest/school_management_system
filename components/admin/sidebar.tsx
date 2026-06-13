@@ -33,6 +33,7 @@ const menuItems = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/admin', permission: 'dashboard' },
   { label: 'Students', icon: Users, href: '/admin/students', permission: 'students' },
   { label: 'Teachers', icon: BookOpen, href: '/admin/teachers', permission: 'teachers' },
+  { label: 'Salaries', icon: CreditCard, href: '/admin/teachers/salaries', permission: 'teachers' },
   { label: 'Attendance', icon: Clock, href: '/admin/attendance', permission: 'attendance' },
   { label: 'Fees', icon: CreditCard, href: '/admin/fees', permission: 'fees' },
   { label: 'Admissions', icon: BookOpen, href: '/admin/admissions', permission: 'admissions' },
