@@ -62,6 +62,11 @@ export default function PublicGalleryPage() {
                   >
                     <div className="aspect-[4/3] w-full relative bg-slate-100 overflow-hidden">
                       <Image src={img.imageUrl} alt={img.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                      {img.imageUrls && img.imageUrls.length > 1 && (
+                        <div className="absolute top-3 right-3 bg-black/70 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">
+                          +{img.imageUrls.length} Photos
+                        </div>
+                      )}
                     </div>
                     <div className="p-5 flex-1 flex flex-col justify-between">
                       <div>

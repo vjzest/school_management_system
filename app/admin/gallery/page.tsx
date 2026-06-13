@@ -7,7 +7,7 @@ import { motion } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Image as ImageIcon, Plus, Trash2, X, Upload } from 'lucide-react'
+import { Image as ImageIcon, Plus, Trash2, X, Upload, Edit } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
 
@@ -22,6 +22,10 @@ export default function GalleryPage() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [uploadProgress, setUploadProgress] = useState<string>('')
   
+  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [editId, setEditId] = useState<string | null>(null)
+  const [editFormData, setEditFormData] = useState({ title: '', description: '', date: '' })
+
   const fileInputRef = useRef<HTMLInputElement>(null)
  
   const fetchGallery = async () => {
@@ -61,7 +65,7 @@ export default function GalleryPage() {
     if (!newImage.title) return toast.error('Please enter a title')
     
     setIsUploading(true)
-    let successCount = 0
+    const uploadedUrls: string[] = []
     try {
       for (let i = 0; i < selectedFiles.length; i++) {
         const file = selectedFiles[i]
@@ -80,35 +84,62 @@ export default function GalleryPage() {
         
         if (!uploadRes.data.success) throw new Error('Upload failed')
         
-        const imageUrl = uploadRes.data.url
-        
-        // 2. Save to Gallery
-        const imageTitle = selectedFiles.length > 1 ? `${newImage.title} (${i + 1})` : newImage.title
-        
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/gallery`, {
-          imageUrl,
-          title: imageTitle,
-          description: newImage.description,
-          date: newImage.date
-        }, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-        
-        if (res.data.success) {
-          successCount++
-        }
+        uploadedUrls.push(uploadRes.data.url)
       }
       
-      toast.success(`${successCount} images added to gallery successfully!`)
-      setIsAddOpen(false)
-      setNewImage({ title: '', description: '', date: new Date().toISOString().split('T')[0] })
-      setSelectedFiles([])
-      fetchGallery()
+      // 2. Save to Gallery
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/gallery`, {
+        imageUrl: uploadedUrls[0], // Keep legacy imageUrl populated with the first image
+        imageUrls: uploadedUrls,
+        title: newImage.title,
+        description: newImage.description,
+        date: newImage.date
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      
+      if (res.data.success) {
+        toast.success('Gallery entry added successfully!')
+        setIsAddOpen(false)
+        setNewImage({ title: '', description: '', date: new Date().toISOString().split('T')[0] })
+        setSelectedFiles([])
+        fetchGallery()
+      }
     } catch (err) {
       toast.error('Failed to upload image')
     } finally {
       setIsUploading(false)
       setUploadProgress('')
+    }
+  }
+
+  const handleEditClick = (img: any) => {
+    setEditId(img._id)
+    setEditFormData({
+      title: img.title,
+      description: img.description || '',
+      date: img.date ? img.date.split('T')[0] : new Date().toISOString().split('T')[0]
+    })
+    setIsEditOpen(true)
+  }
+
+  const handleUpdate = async () => {
+    if (!editFormData.title) return toast.error('Title is required')
+    setIsUploading(true)
+    try {
+      const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/gallery/${editId}`, editFormData, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      if (res.data.success) {
+        toast.success('Image details updated')
+        setIsEditOpen(false)
+        setEditId(null)
+        fetchGallery()
+      }
+    } catch (err) {
+      toast.error('Failed to update image details')
+    } finally {
+      setIsUploading(false)
     }
   }
 
@@ -174,6 +205,41 @@ export default function GalleryPage() {
         </Card>
       )}
 
+      {isEditOpen && (
+        <Card className="border-0 shadow-lg mb-8 relative">
+          <Button variant="ghost" size="icon" className="absolute top-2 right-2 text-slate-400 hover:text-slate-600" onClick={() => { setIsEditOpen(false); setEditId(null); }}>
+            <X className="w-5 h-5" />
+          </Button>
+          <CardContent className="p-6">
+            <h3 className="text-lg font-bold text-[#0D2640] mb-4">Edit Image Details</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs font-bold text-slate-500 mb-1 block">Title *</label>
+                  <Input value={editFormData.title} onChange={e => setEditFormData({...editFormData, title: e.target.value})} placeholder="e.g. Annual Sports Day" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-500 mb-1 block">Date</label>
+                  <Input type="date" value={editFormData.date} onChange={e => setEditFormData({...editFormData, date: e.target.value})} />
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs font-bold text-slate-500 mb-1 block">Description (Optional)</label>
+                  <Input value={editFormData.description} onChange={e => setEditFormData({...editFormData, description: e.target.value})} placeholder="Short description..." className="h-full" />
+                </div>
+              </div>
+            </div>
+            <div className="mt-6 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => { setIsEditOpen(false); setEditId(null); }} className="rounded-xl">Cancel</Button>
+              <Button onClick={handleUpdate} disabled={isUploading} className="bg-[#589C47] hover:bg-[#4a853b] text-white">
+                {isUploading ? 'Saving...' : 'Save Changes'}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {isLoading ? (
         <div className="font-bold text-slate-500 p-8">Loading gallery...</div>
       ) : images.length > 0 ? (
@@ -188,7 +254,10 @@ export default function GalleryPage() {
             >
               <div className="aspect-[4/3] w-full relative bg-slate-100">
                 <Image src={img.imageUrl} alt={img.title} fill className="object-cover" />
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                  <Button size="sm" onClick={() => handleEditClick(img)} className="bg-[#27598C] hover:bg-[#1f4770] text-white">
+                    <Edit className="w-4 h-4 mr-2" /> Edit
+                  </Button>
                   <Button variant="destructive" size="sm" onClick={() => handleDelete(img._id)} className="bg-red-500 hover:bg-red-600">
                     <Trash2 className="w-4 h-4 mr-2" /> Delete
                   </Button>

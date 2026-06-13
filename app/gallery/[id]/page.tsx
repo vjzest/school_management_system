@@ -13,6 +13,7 @@ import Footer from '@/components/landing/footer'
 export default function ImageDetailPage() {
   const { id } = useParams()
   const [image, setImage] = useState<any>(null)
+  const [activeImageUrl, setActiveImageUrl] = useState<string>('')
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -24,6 +25,7 @@ export default function ImageDetailPage() {
         const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/admin/gallery/${id}`)
         if (res.data.success) {
           setImage(res.data.data)
+          setActiveImageUrl(res.data.data.imageUrl || (res.data.data.imageUrls && res.data.data.imageUrls[0]) || '')
         } else {
           setError('Image not found')
         }
@@ -68,14 +70,40 @@ export default function ImageDetailPage() {
             >
               {/* Image Frame */}
               <div className="relative w-full aspect-[16/10] bg-slate-50 rounded-2xl overflow-hidden shadow-inner border border-slate-100">
-                <Image 
-                  src={image.imageUrl} 
-                  alt={image.title} 
-                  fill 
-                  className="object-contain"
-                  priority 
-                />
+                {activeImageUrl ? (
+                  <Image 
+                    src={activeImageUrl} 
+                    alt={image.title} 
+                    fill 
+                    className="object-contain"
+                    priority 
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-slate-400">
+                    <ImageIcon className="w-12 h-12" />
+                  </div>
+                )}
               </div>
+
+              {/* Thumbnails list if multiple images exist */}
+              {image.imageUrls && image.imageUrls.length > 1 && (
+                <div className="space-y-2">
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Album Images ({image.imageUrls.length})</p>
+                  <div className="flex flex-wrap gap-2 overflow-x-auto pb-2">
+                    {image.imageUrls.map((url: string, index: number) => (
+                      <button
+                        key={index}
+                        onClick={() => setActiveImageUrl(url)}
+                        className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${
+                          activeImageUrl === url ? 'border-[#27598C] scale-95 shadow-md' : 'border-transparent opacity-70 hover:opacity-100'
+                        }`}
+                      >
+                        <Image src={url} alt={`Thumbnail ${index + 1}`} fill className="object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Detail Info */}
               <div className="space-y-4">
